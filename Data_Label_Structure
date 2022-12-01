@@ -1,0 +1,131 @@
+import java.io.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.regex.Pattern;  
+public class Test_Label  
+{  
+public static void main(String[] args) throws Exception  
+{  
+
+//parsing a CSV file into Scanner class constructor  
+// Change the new file to your file location
+Scanner sc = new Scanner(new File("C:\\Users\\cheye\\Downloads\\welp.csv"));  
+sc.useDelimiter(",");   //sets the delimiter pattern  
+
+
+// sets the title of each columns
+String[][] title = new String[1][5];
+title[0][0] = " ,";
+title[0][1] = "Frames ,";
+title[0][2] ="Time, ";
+title[0][3] ="label, ";
+title[0][4] = "coords";
+for( int i = 0; i < 5; i++)
+{
+	System.out.print(title[0][i] );
+}
+
+
+while (sc.hasNext())  //returns a boolean value  
+{  
+	String coord1 = "";
+	String coord2 = "";
+	String coord3 = "";
+	String coord4 = "";
+	String cord = "";
+	double frames = 0;
+	double time = 0.00;
+	
+	// change the rows based on the amount of frames in the data set
+	int rows = 792; // frames
+	int columns = 5; 
+
+	final DecimalFormat df = new DecimalFormat("0.0");
+	String[][] arraySet = new String[rows][columns];
+	
+	String frame = "";
+	// populate matrix
+	
+	for (int j = 0; j < rows; j++) 
+	{
+		System.out.print("\n");
+		for(int k = 0; k < columns; k++)
+		{
+			
+			if (k == 0)
+			{
+				frame = sc.next();
+				arraySet[j][k] = frame.replace("{\"frameNumber\":", "");
+				frames = Double.parseDouble(arraySet[j][k]);
+				arraySet[j][k] += ",";
+			}
+			if (k == 1)
+			{
+				arraySet[j][k] = arraySet[j][k -1];
+			}
+			
+			if ( k == 2)
+			{
+				//System.out.print("\t"+ "\t" );
+				time = frames * 1/30;
+				arraySet[j][k] = df.format(time) + " sec,";
+			}
+			
+			if (k == 3)
+			{
+				arraySet[j][k] ="DRONE,";
+			}
+
+			if (k == 4)
+			{
+				
+				// skips unnescessary columns in the csv file
+				sc.next();
+				sc.next();
+				sc.next();
+				sc.next();
+				sc.next();
+				sc.next();
+				sc.next();
+				
+				coord1 = sc.next();
+				coord1 = coord1.substring(14,17);
+				double c1 = Double.parseDouble(coord1);
+				coord1 = df.format(c1);
+				
+				
+				coord2 = sc.next();
+				coord2 = coord2.substring(7, 10);
+				double c2 = Double.parseDouble(coord2);
+				coord2 = df.format(c2);
+
+				
+				coord3 = sc.next();
+				coord3 = coord3.substring(9, 12);
+				double c3 = Double.parseDouble(coord3);
+				coord3 = df.format(c3);
+
+				
+				coord4 = sc.next();
+				coord4 = coord4.substring(8, 11);
+				
+				//System.out.println(coord4);  To check each coordinate if theres a numerical num in string
+				
+				double c4 = Double.parseDouble(coord4);
+				coord4 = df.format(c4);
+				
+				cord = "\"[" + coord1  + ", "+ coord2 + ", "+ coord3 + ", "+ coord4 + "]\" ";
+				arraySet[j][k] = cord; 
+				
+				sc.nextLine();
+			}
+			System.out.print(arraySet[j][k]);
+		}
+	
+	}
+	
+}   
+	sc.close();  //closes the scanner  s
+}  
+}
